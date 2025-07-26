@@ -1,0 +1,957 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "0.0.1",
+        "title": "Personal Finance Microservices",
+        "description": "This is the sample demonstration of python flask microservices.",
+        "contact": {
+            "name": "Mohan KB",
+            "url": "/"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:5000/api/v1",
+            "description": "development server"
+        },
+        {
+            "url": "http://localhost:5000/api/v1",
+            "description": "Local server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "User",
+            "description": "User Management"
+        },
+        {
+            "name": "Assets",
+            "description": "Assets Management"
+        },
+        {
+            "name": "Constants",
+            "description": "Constants Management"
+        },
+        {
+            "name": "PriceHistory",
+            "description": "Price History Management"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Unique identifier of the user"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "description": "Full name of the user"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 100,
+                        "description": "Email address of the user"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "description": "Hashed password of the user"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the user was created"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the user was last updated"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "password"
+                ]
+            },
+            "UserLogin": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserLoggedIn": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ChangePassword": {
+                "type": "object",
+                "properties": {
+                    "old_password": {
+                        "type": "string"
+                    },
+                    "new_password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Profile": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Asset": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for the asset"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the asset"
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "description": "Description of the asset"
+                    },
+                    "investment_type": {
+                        "type": "string",
+                        "description": "Category of the asset"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "description": "Currency in which the asset is valued"
+                    },
+                    "platform": {
+                        "type": "string",
+                        "description": "Platform where the asset is available"
+                    },
+                    "custom_data": {
+                        "type": "object",
+                        "description": "Custom data related to the asset"
+                    }
+                }
+            },
+            "Constant": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PriceHistory": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "asset_id": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "decimal"
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "BearerAuth": []
+        }
+    ],
+    "paths": {
+        "/sign_up": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create a user account and get access to the millions of assets database",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User Created Successfully"
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            }
+        },
+        "/sign_in": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Authenticate yourself by using your username and password",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLogin"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "schema": {
+                            "type": "object",
+                            "items": {
+                                "$ref": "#/components/schemas/UserLoggedIn"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Incorrect Username or Password"
+                    }
+                }
+            }
+        },
+        "/profile/{appname}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Find your profile by username",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "description": "Username of the current logged in user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User Found"
+                    },
+                    "401": {
+                        "description": "Unauthorized Access"
+                    }
+                }
+            }
+        },
+        "/update_profile/{appname}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Update your profile by your username",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Profile"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "description": "Username of the current logged in user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User profile updated successfully"
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            }
+        },
+        "/change_password/{appname}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Change your password by your username",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePassword"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "description": "Username of the current logged in user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password changed successfully"
+                    },
+                    "400": {
+                        "description": "Missing Fields"
+                    }
+                }
+            }
+        },
+        "/delete_account/{appname}": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete your account by using your username",
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "description": "Username of the current logged in user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account Deleted Successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized Access"
+                    }
+                }
+            }
+        },
+        "/assets/{appname}": {
+            "post": {
+                "tags": [
+                    "Assets"
+                ],
+                "summary": "Add new asset to the database",
+                "requestBody": {
+                    "description": "",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Asset"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "description": "Username of the current logged in user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Assets Added Successfully"
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Assets"
+                ],
+                "summary": "Fetch all assets",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "description": "Username of the current logged in user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/Asset"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Assets not found"
+                    }
+                }
+            }
+        },
+        "/assets/{appname}/{id}": {
+            "get": {
+                "tags": [
+                    "Assets"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Search asset",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "path",
+                        "description": "title of asset to return",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "description": "Username of the current logged in user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Asset"
+                        }
+                    },
+                    "404": {
+                        "description": "Asset not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Assets"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Favourite assets",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "description": "Username of the current logged in user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/Asset"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Assets not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Assets"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Delete asset",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "path",
+                        "description": "title of asset to return",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "description": "Username of the current logged in user",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Asset Deleted Successfully"
+                    },
+                    "404": {
+                        "description": "Asset not found"
+                    }
+                }
+            }
+        },
+        "/constants/{appname}": {
+            "post": {
+                "tags": [
+                    "Constants"
+                ],
+                "summary": "Create a constant",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Constant"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Constant created"
+                    },
+                    "409": {
+                        "description": "Already exists"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Constants"
+                ],
+                "summary": "Get all constants",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of constants",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Constant"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/constants/{appname}/{name}": {
+            "get": {
+                "tags": [
+                    "Constants"
+                ],
+                "summary": "Get a constant by name",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Constant found"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Constants"
+                ],
+                "summary": "Update constant",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Constant"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Constants"
+                ],
+                "summary": "Delete constant",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted successfully"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/price_history/{appname}": {
+            "post": {
+                "tags": [
+                    "PriceHistory"
+                ],
+                "summary": "Create a price history entry",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PriceHistory"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "PriceHistory"
+                ],
+                "summary": "Get all price history entries",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of entries",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PriceHistory"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/price_history/{appname}/{id}": {
+            "get": {
+                "tags": [
+                    "PriceHistory"
+                ],
+                "summary": "Get a price history entry by ID",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Found"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "PriceHistory"
+                ],
+                "summary": "Update price history entry",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PriceHistory"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "PriceHistory"
+                ],
+                "summary": "Delete price history entry",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "appname",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        }
+    }
+}
