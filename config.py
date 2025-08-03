@@ -5,7 +5,7 @@ class Config:
     # API Configs
     API_PATH = '/api/'
     API_VERSION = 'v1'
-    BASE_URL = 'http://127.0.0.1:5000'
+
 
     # User API endpoint
     SIGN_IN = API_PATH+API_VERSION+'/sign_in'

@@ -9,6 +9,9 @@ class TransactionTypeEnum(enum.Enum):
     BUY = "BUY"
     SELL = "SELL"
 
+class Type(enum.Enum):
+    PIN = "PIN"
+    PWD = "PWD"
 
 class Users(db.Model):
     __tablename__ = "Users"
@@ -91,5 +94,7 @@ class pwd(db.Model):
     __tablename__ = "pwd"
 
     id = db.Column(db.String(36), primary_key=True, nullable=False)
+    name= db.Column(db.String(100), nullable=False)
+    type = db.Column(db.Enum(Type), nullable=False)
     entity = db.Column(db.String(36), db.ForeignKey("Assets.id"))
     pwd = db.Column(db.Text, nullable=False)

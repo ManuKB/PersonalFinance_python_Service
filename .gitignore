@@ -1,4 +1,16 @@
 /.idea
 /pf
 /__pycache__
-/v39
+/version39
+/app/__pycache__
+/app/api/controller/__pycache__
+/app/api/controller/__pycache__
+app/__pycache__/__init__.cpython-39.pyc
+app/__pycache__/models.cpython-39.pyc
+app/__pycache__/__init__.cpython-39.pyc
+app/__pycache__/models.cpython-39.pyc
+app/api/controller/__pycache__/__init__.cpython-39.pyc
+app/api/controller/__pycache__/asset.cpython-39.pyc
+app/api/controller/__pycache__/constants.cpython-39.pyc
+app/api/controller/__pycache__/pwd.cpython-39.pyc
+app/api/controller/__pycache__/users.cpython-39.pyc
