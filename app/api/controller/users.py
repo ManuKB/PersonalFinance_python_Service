@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import (
     jwt_required, create_access_token, get_jwt_identity
@@ -107,7 +107,7 @@ def sign_in():
     if not user or not check_password_hash(user.pwd, password):
         return jsonify({"error": "Incorrect Email or Password"}), 401
 
-    access_token = create_access_token(identity="mri")
+    access_token = create_access_token(identity="mri", expires_delta=timedelta(minutes=30))
     return jsonify({
         "access_token": access_token,
         "name": user.name,
