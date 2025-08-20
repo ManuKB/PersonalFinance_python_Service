@@ -18,20 +18,21 @@ def create_pwd(appname):
         abort(401)
     data = request.get_json()
     entity = data.get('entity')
-    pwd = data.get('pwd', '')
-    pwd = cipher.encrypt(pwd.encode())
+    pwrd = data.get('pwd', '')
+    name=data.get('name', '')
+    pwrd = cipher.encrypt(pwrd.encode())
     new_id = str(uuid.uuid4())
     if not entity:
        abort(400)
 
-    if pwd.query.get(entity):
+    if pwd.query.filter_by(name=name).first():
         return jsonify({"error": "pwd already exists"}), 409
 
-    p = pwd(id=new_id, entity=entity, pwd=pwd)
+    p = pwd(id=new_id, entity=entity, pwd=pwrd, name=name, type=data.get('type', 'PWD'))
     db.session.add(p)
     db.session.commit()
 
-    return jsonify({"message": "pwd created", "data": {"entity": entity, "pwd": pwd}}), 201
+    return jsonify({"message": "pwd created", "data": {"entity": entity}}), 201
 
 
 # 📥 Get All pwd
@@ -46,7 +47,7 @@ def get_pwds(appname):
     # Decrypt passwords before returning
     for c in pwds:
         c.pwd = cipher.decrypt(c.pwd).decode()  
-    result = [{"entity": c.entity, "pwd": c.pwd} for c in pwds]
+    result = [{"entity": c.entity, "pwd": c.pwd, "name":c.name} for c in pwds]
     return jsonify(result), 200
 
 
@@ -75,9 +76,9 @@ def update_pwd(entity, appname):
         return jsonify({"error": "pwd not found"}), 404
 
     data = request.get_json()
-    pwd = data.get('pwd')
+    pwdr = data.get('pwd')
     if pwd:
-        p.pwd = cipher.encrypt(pwd.encode())
+        p.pwd = cipher.encrypt(pwdr.encode())
     else:
         p.pwd = p.pwd
             

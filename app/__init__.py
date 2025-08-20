@@ -9,10 +9,13 @@ from flask_cors import CORS
 
 def initialize_app():
     app = Flask(__name__)
-
-    # CORS(app, resources={r"/*": {"origins": ["http://localhost:3000","http://localhost:5000", "http://127.0.0.1:3000", "http://127.0.0.1:5000"]}})
+    # CORS(app)
+    CORS(app, resources={r"/*": {"origins": ["http://localhost:3000","http://localhost:5000", "http://127.0.0.1:3000", "http://127.0.0.1:5000", "http://192.168.31.147:3000"]}})
     
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    # CORS(app, resources={r"/*": {"origins": "*"}})
+    # cors = CORS()
+    # cors.init_app(app, resources={r"/*": {"origins": "*"}})
+   # CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
     # App Config
     app.config['SQLALCHEMY_DATABASE_URI'] = Config.SQLALCHEMY_DATABASE_URI
@@ -22,6 +25,7 @@ def initialize_app():
 
     # Initialize JWT and DB
     JWTManager(app)
+    # CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True, allow_headers=["Content-Type", "Authorization"])
     db.init_app(app)
 
     # Swagger

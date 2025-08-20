@@ -99,20 +99,25 @@ def sign_in():
     # if request.method == 'OPTIONS':
     # # Respond with empty OK for preflight
     #     return '', 200
-    data = request.json
-    email = data.get('email')
-    password = data.get('password')
-    
-    user = Users.query.filter_by(email=email).first()
-    if not user or not check_password_hash(user.pwd, password):
-        return jsonify({"error": "Incorrect Email or Password"}), 401
+    try:
+        data = request.json
+        email = data.get('email')
+        password = data.get('password')
+        if email is not None:
+            email = email.lower()
+        
+        user = Users.query.filter_by(email=email).first()
+        if not user or not check_password_hash(user.pwd, password):
+            return jsonify({"error": "Incorrect Email or Password"}), 401
 
-    access_token = create_access_token(identity="mri", expires_delta=timedelta(minutes=30))
-    return jsonify({
-        "access_token": access_token,
-        "name": user.name,
-        "email": user.email
-    }), 200
+        access_token = create_access_token(identity="isirirajinimohan", expires_delta=timedelta(minutes=5))
+        return jsonify({
+            "access_token": access_token,
+            "name": user.name,
+            "email": user.email,
+        }), 200
+    except Exception as e:
+        return jsonify({"error": "Missing required fields"}), 400   
 
 
 # Sign-up
@@ -123,6 +128,8 @@ def sign_up():
         name = data['name']
         email = data['email']
         password = data['password']
+        if email is not None:
+            email = email.lower()
 
         if Users.query.filter_by(email=email).first():
             return jsonify({"error": f"Email '{email}' already exists"}), 400

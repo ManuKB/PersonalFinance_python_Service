@@ -12,6 +12,7 @@ class TransactionTypeEnum(enum.Enum):
 class Type(enum.Enum):
     PIN = "PIN"
     PWD = "PWD"
+    credentials = "credentials"
 
 class Users(db.Model):
     __tablename__ = "Users"
@@ -96,5 +97,5 @@ class pwd(db.Model):
     id = db.Column(db.String(36), primary_key=True, nullable=False)
     name= db.Column(db.String(100), nullable=False)
     type = db.Column(db.Enum(Type), nullable=False)
-    entity = db.Column(db.String(36), db.ForeignKey("Assets.id"))
+    entity = db.Column(db.String(100), nullable=False)
     pwd = db.Column(db.Text, nullable=False)
